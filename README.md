@@ -61,15 +61,6 @@ Multi-server Dokploy deployment with Tailscale mesh, running containerized apps 
   <img src="./assets/github-stats.svg" alt="GitHub Stats" />
 </p>
 
-<br/>
-
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="./assets/github-snake-dark.svg" />
-    <source media="(prefers-color-scheme: light)" srcset="./assets/github-snake.svg" />
-    <img alt="github-snake" src="./assets/github-snake-dark.svg" />
-  </picture>
-</p>
 
 </details>
 

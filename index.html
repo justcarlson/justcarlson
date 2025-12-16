@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GitHub Profile Preview - justcarlson</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.1/github-markdown-dark.min.css">
+  <style>
+    :root {
+      /* Tokyo Night Colors */
+      --bg-primary: #1a1b26;
+      --bg-secondary: #24283b;
+      --bg-tertiary: #1f2335;
+      --text-primary: #a9b1d6;
+      --text-secondary: #565f89;
+      --accent-blue: #7aa2f7;
+      --accent-green: #9ece6a;
+      --accent-purple: #bb9af7;
+      --accent-orange: #ff9e64;
+      --border-color: #414868;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .header {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 16px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-content {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-logo {
+      width: 32px;
+      height: 32px;
+      fill: var(--text-primary);
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .header-subtitle {
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .markdown-body {
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      padding: 32px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .markdown-body h1,
+    .markdown-body h2,
+    .markdown-body h3 {
+      color: var(--text-primary);
+      border-bottom-color: var(--border-color);
+    }
+
+    .markdown-body hr {
+      background-color: var(--border-color);
+    }
+
+    .markdown-body a {
+      color: var(--accent-blue);
+    }
+
+    .markdown-body blockquote {
+      border-left-color: var(--accent-purple);
+      color: var(--text-secondary);
+    }
+
+    .markdown-body code {
+      background-color: var(--bg-secondary);
+      color: var(--accent-orange);
+    }
+
+    .markdown-body pre {
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+    }
+
+    .preview-note {
+      background: var(--bg-secondary);
+      border: 1px solid var(--accent-blue);
+      border-radius: 6px;
+      padding: 12px 16px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .preview-note strong {
+      color: var(--accent-blue);
+    }
+
+    /* Center alignment for div elements */
+    .markdown-body div[align="center"] {
+      text-align: center;
+    }
+
+    /* Badge styling */
+    .markdown-body img[src*="shields.io"],
+    .markdown-body img[src*="skillicons.dev"] {
+      margin: 4px;
+    }
+
+    /* Responsive images */
+    .markdown-body img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Picture element for snake */
+    .markdown-body picture {
+      display: block;
+      text-align: center;
+    }
+
+    .markdown-body picture img {
+      max-width: 100%;
+    }
+
+    /* Collapsible details styling */
+    .markdown-body details {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 0.5em 1em;
+      margin: 1em 0;
+    }
+
+    .markdown-body summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--text-primary);
+      padding: 0.5em 0;
+    }
+
+    .markdown-body details[open] summary {
+      margin-bottom: 0.5em;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 0.5em;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      border-top: 1px solid var(--border-color);
+      margin-top: 40px;
+    }
+
+    .footer a {
+      color: var(--accent-blue);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-content">
+      <svg class="header-logo" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+      </svg>
+      <span class="header-title">justcarlson</span>
+      <span class="header-subtitle">/ README.md preview</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="preview-note">
+      <strong>Preview Mode:</strong> This is a local preview of your GitHub profile README. Some dynamic elements (like the snake animation) will only work after deploying to GitHub.
+    </div>
+
+    <article class="markdown-body">
+      <!-- README.md for github.com/justcarlson -->
+
+      <div align="center">
+
+        <a href="https://git.io/typing-svg">
+          <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=28&pause=1000&color=7AA2F7&center=true&vCenter=true&width=600&lines=Hey%2C+I'm+Justin;Technical+Support+Engineer;Learning+to+build+with+AI;Homelab+enthusiast" alt="Typing SVG" />
+        </a>
+
+        <p>
+          <a href="https://linkedin.com/in/justincarlson0">
+            <img src="https://img.shields.io/badge/LinkedIn-414868?style=flat-square&logo=linkedin&logoColor=a9b1d6" alt="LinkedIn" />
+          </a>
+          <a href="mailto:justincarlson0@gmail.com">
+            <img src="https://img.shields.io/badge/Email-414868?style=flat-square&logo=gmail&logoColor=a9b1d6" alt="Email" />
+          </a>
+          <a href="https://github.com/justcarlson">
+            <img src="https://img.shields.io/badge/GitHub-414868?style=flat-square&logo=github&logoColor=a9b1d6" alt="GitHub" />
+          </a>
+        </p>
+
+      </div>
+
+      <hr>
+
+      <h2>About Me</h2>
+
+      <p>Technical Support Engineer learning to build with AI. Currently exploring MCP, AI agents, and infrastructure automation while running a homelab.</p>
+
+      <blockquote>
+        <p><em>"It is never too late to be what you might have been."</em><br>
+        — George Eliot</p>
+      </blockquote>
+
+      <hr>
+
+      <details>
+        <summary>🛠 Tech Stack</summary>
+        <br>
+        <p>
+          <img src="https://img.shields.io/badge/Python-414868?style=flat-square&logo=python&logoColor=a9b1d6" alt="Python" />
+          <img src="https://img.shields.io/badge/TypeScript-414868?style=flat-square&logo=typescript&logoColor=a9b1d6" alt="TypeScript" />
+          <img src="https://img.shields.io/badge/Shell-414868?style=flat-square&logo=gnubash&logoColor=a9b1d6" alt="Shell" />
+          <img src="https://img.shields.io/badge/Docker-414868?style=flat-square&logo=docker&logoColor=a9b1d6" alt="Docker" />
+          <img src="https://img.shields.io/badge/Linux-414868?style=flat-square&logo=linux&logoColor=a9b1d6" alt="Linux" />
+          <img src="https://img.shields.io/badge/Git-414868?style=flat-square&logo=git&logoColor=a9b1d6" alt="Git" />
+        </p>
+        <p>
+          <a href="https://anthropic.com"><img src="https://img.shields.io/badge/Claude-414868?style=flat-square&logo=anthropic&logoColor=a9b1d6" alt="Claude" /></a>
+          <a href="https://opencode.ai"><img src="https://img.shields.io/badge/OpenCode-414868?style=flat-square&logoColor=a9b1d6" alt="OpenCode" /></a>
+        </p>
+      </details>
+
+      <details>
+        <summary>🏠 My Homelab</summary>
+        <br>
+        <p>
+          <a href="https://www.proxmox.com/"><img src="https://img.shields.io/badge/Proxmox-414868?style=flat-square&logo=proxmox&logoColor=a9b1d6" alt="Proxmox" /></a>
+          <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-414868?style=flat-square&logo=docker&logoColor=a9b1d6" alt="Docker" /></a>
+          <a href="https://dokploy.com/"><img src="https://img.shields.io/badge/Dokploy-414868?style=flat-square&logoColor=a9b1d6" alt="Dokploy" /></a>
+          <a href="https://tailscale.com/"><img src="https://img.shields.io/badge/Tailscale-414868?style=flat-square&logo=tailscale&logoColor=a9b1d6" alt="Tailscale" /></a>
+          <a href="https://traefik.io/"><img src="https://img.shields.io/badge/Traefik-414868?style=flat-square&logo=traefikproxy&logoColor=a9b1d6" alt="Traefik" /></a>
+          <a href="https://www.wireguard.com/"><img src="https://img.shields.io/badge/WireGuard-414868?style=flat-square&logo=wireguard&logoColor=a9b1d6" alt="WireGuard" /></a>
+          <a href="https://ui.com/"><img src="https://img.shields.io/badge/Ubiquiti-414868?style=flat-square&logo=ubiquiti&logoColor=a9b1d6" alt="Ubiquiti" /></a>
+        </p>
+        <blockquote>
+          <p>Multi-server Dokploy deployment with Tailscale mesh, running containerized apps on Proxmox VE with Traefik for SSL/routing.</p>
+        </blockquote>
+      </details>
+
+      <details>
+        <summary>📊 GitHub Stats</summary>
+        <br>
+        <div align="center">
+          <a href="https://github.com/justcarlson">
+            <img src="https://github-readme-stats.vercel.app/api?username=justcarlson&show_icons=true&hide_border=true&bg_color=1a1b26&title_color=7aa2f7&text_color=a9b1d6&icon_color=9ece6a" alt="Justin's GitHub Stats" />
+          </a>
+        </div>
+        <br>
+        <div align="center">
+          <picture>
+            <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/justcarlson/justcarlson/output/github-snake-dark.svg" />
+            <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/justcarlson/justcarlson/output/github-snake.svg" />
+            <img alt="github-snake" src="https://raw.githubusercontent.com/justcarlson/justcarlson/output/github-snake-dark.svg" />
+          </picture>
+          <p style="color: #565f89; font-size: 12px;"><em>(Snake animation will appear after GitHub Action runs)</em></p>
+        </div>
+      </details>
+
+      <details open>
+        <summary>🧪 Genesis Block Footer Preview</summary>
+        <br>
+        <div align="center">
+          <img src="./assets/test-snake.svg" alt="Genesis Block Footer Preview" style="max-width: 100%;" />
+          <p style="color: #565f89; font-size: 12px;"><em>Preview of the Bitcoin genesis block hex dump footer</em></p>
+        </div>
+      </details>
+
+      <hr>
+
+      <div align="center">
+        <img src="https://komarev.com/ghpvc/?username=justcarlson&color=414868&style=flat-square&label=Profile+Views" alt="Profile Views" />
+      </div>
+
+    </article>
+  </main>
+
+  <footer class="footer">
+    <p>Preview generated for <a href="https://github.com/justcarlson">github.com/justcarlson</a></p>
+    <p>To deploy: Create a repository named <code>justcarlson</code> and add the README.md</p>
+  </footer>
+</body>
+</html>

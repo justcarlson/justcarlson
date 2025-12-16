@@ -58,6 +58,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: 4a. Add Genesis Block Footer (Light)
+        run: python3 scripts/add-genesis-footer.py assets/github-snake.svg light
+
       - name: 5. Generate GitHub Snake Animation (Dark - Tokyo Night Green)
         uses: Platane/snk/svg-only@v3
         with:
@@ -66,6 +69,9 @@ jobs:
             assets/github-snake-dark.svg?palette=github-dark&color_snake=#9ece6a&color_dots=#1a1b26,#24283b,#414868,#565f89,#7aa2f7
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 5a. Add Genesis Block Footer (Dark)
+        run: python3 scripts/add-genesis-footer.py assets/github-snake-dark.svg dark
 
       - name: 6. Fetch GitHub Stats
         run: |
