@@ -1,0 +1,185 @@
+name: Update GitHub Stats
+
+on:
+  schedule:
+    - cron: "0 */12 * * *"
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: |
+      github.actor != 'github-actions[bot]' && 
+      !contains(github.event.head_commit.message, 'Auto-update: GitHub Stats')
+    outputs:
+      pr_number: ${{ steps.create-pr.outputs.pr_number }}
+
+    env:
+      GH_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+
+    steps:
+      - name: 1. Checkout Main Branch
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+
+      - name: 2. Create develop branch if not exists
+        run: |
+          git fetch origin
+          if ! git rev-parse --verify origin/develop >/dev/null 2>&1; then
+            git checkout -b develop
+            git push origin develop
+          fi
+          git checkout develop
+          git pull origin develop
+
+      - name: 3. Create assets directory if not exists
+        run: |
+          if [ ! -d "assets" ]; then
+            mkdir -p assets
+            echo "# Assets Directory" > assets/README.md
+            echo "This directory contains auto-generated GitHub stats and visualizations." >> assets/README.md
+          fi
+
+      - name: 4. Generate GitHub Snake Animation (Light - Tokyo Night Blue)
+        uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: justcarlson
+          outputs: |
+            assets/github-snake.svg?color_snake=#7aa2f7&color_dots=#1a1b26,#24283b,#414868,#565f89,#7aa2f7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 5. Generate GitHub Snake Animation (Dark - Tokyo Night Green)
+        uses: Platane/snk/svg-only@v3
+        with:
+          github_user_name: justcarlson
+          outputs: |
+            assets/github-snake-dark.svg?palette=github-dark&color_snake=#9ece6a&color_dots=#1a1b26,#24283b,#414868,#565f89,#7aa2f7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 6. Fetch GitHub Stats
+        run: |
+          curl -f --connect-timeout 30 --retry 3 --retry-delay 5 \
+            -o "./assets/github-stats.svg" \
+            "https://github-readme-stats.vercel.app/api?username=justcarlson&show_icons=true&hide_border=true&bg_color=1a1b26&title_color=7aa2f7&text_color=a9b1d6&icon_color=9ece6a" \
+            || echo "Failed to fetch GitHub Stats."
+
+      - name: 7. Configure Git
+        run: |
+          git config --local user.email "justincarlson0@gmail.com"
+          git config --local user.name "Justin Carlson"
+
+      - name: 8. Commit Snake Animation (Light)
+        run: |
+          if [ -f "assets/github-snake.svg" ]; then
+            git add assets/github-snake.svg
+            git diff --staged --quiet || git commit -m "Update: GitHub Snake Animation (Light Mode)"
+          fi
+
+      - name: 9. Commit Snake Animation (Dark)
+        run: |
+          if [ -f "assets/github-snake-dark.svg" ]; then
+            git add assets/github-snake-dark.svg
+            git diff --staged --quiet || git commit -m "Update: GitHub Snake Animation (Dark Mode)"
+          fi
+
+      - name: 10. Commit GitHub Stats
+        run: |
+          if [ -f "assets/github-stats.svg" ]; then
+            git add assets/github-stats.svg
+            git diff --staged --quiet || git commit -m "Update: GitHub Stats"
+          fi
+
+      - name: 11. Commit Assets README if new
+        run: |
+          if [ -f "assets/README.md" ]; then
+            git add assets/README.md
+            git diff --staged --quiet || git commit -m "Update: Assets README"
+          fi
+
+      - name: 12. Push to develop branch
+        run: git push origin develop
+
+      - name: 13. Create Pull Request
+        id: create-pr
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          EXISTING_PR=$(gh pr list --base main --head develop --json number --jq '.[0].number // empty')
+
+          if [ -z "$EXISTING_PR" ]; then
+            gh pr create \
+              --base main \
+              --head develop \
+              --title "Auto-update: GitHub Stats & Visualizations" \
+              --body "Automated update of GitHub stats and snake animations."
+
+            PR_NUMBER=$(gh pr list --base main --head develop --json number --jq '.[0].number')
+            echo "PR created: #$PR_NUMBER"
+          else
+            PR_NUMBER=$EXISTING_PR
+            echo "Using existing PR #$PR_NUMBER"
+          fi
+
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+          echo "Final PR number: $PR_NUMBER"
+
+  auto-approve:
+    needs: generate
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Auto-approve PR
+        uses: hmarr/auto-approve-action@v4
+        with:
+          github-token: ${{ secrets.WORKFLOW_TOKEN }}
+          review-message: "Auto-approved: GitHub stats updated successfully"
+          pull-request-number: ${{ needs.generate.outputs.pr_number }}
+
+  auto-merge:
+    needs: [generate, auto-approve]
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Auto-merge approved PR
+        env:
+          GH_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
+        run: |
+          PR_NUMBER="${{ needs.generate.outputs.pr_number }}"
+          
+          if [ -z "$PR_NUMBER" ]; then
+            echo "PR_NUMBER is empty, trying to find PR manually..."
+            PR_NUMBER=$(gh pr list --base main --head develop --json number --jq '.[0].number // empty')
+            
+            if [ -z "$PR_NUMBER" ]; then
+              echo "No PR found, cannot merge"
+              exit 1
+            fi
+            
+            echo "Found PR #$PR_NUMBER"
+          fi
+          
+          echo "Waiting for PR #$PR_NUMBER to be mergeable..."
+          sleep 10
+
+          gh pr merge "$PR_NUMBER" --merge --subject "Merge pull request #$PR_NUMBER [skip ci]"
+          echo "PR #$PR_NUMBER merged successfully"

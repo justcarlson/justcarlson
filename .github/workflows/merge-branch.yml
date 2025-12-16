@@ -1,0 +1,44 @@
+name: Sync Branches
+
+on:
+  workflow_run:
+    workflows: ["Update GitHub Stats"]
+    types:
+      - completed
+
+permissions:
+  contents: write
+
+jobs:
+  merge-main-to-develop:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.WORKFLOW_TOKEN }}
+
+      - name: Fetch all remote branches
+        run: |
+          git fetch origin main develop --force
+
+      - name: Configure Git
+        run: |
+          git config user.name "Justin Carlson"
+          git config user.email "justincarlson0@gmail.com"
+
+      - name: Merge main to develop safely
+        run: |
+          git checkout develop
+          git pull origin develop --rebase
+          if ! git merge origin/main --no-ff -m "Sync main to develop"; then
+            echo "Merge conflict detected - aborting"
+            git merge --abort
+            exit 1
+          fi
+
+      - name: Push changes
+        run: git push origin develop
