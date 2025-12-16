@@ -28,7 +28,7 @@ jobs:
       - name: Configure Git
         run: |
           git config user.name "Justin Carlson"
-          git config user.email "justincarlson0@gmail.com"
+          git config user.email "40642470+justcarlson@users.noreply.github.com"
 
       - name: Merge main to develop safely
         run: |
