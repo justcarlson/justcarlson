@@ -10,38 +10,23 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
-  generate:
+  update-assets:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     if: |
       github.actor != 'github-actions[bot]' && 
       !contains(github.event.head_commit.message, 'Auto-update: GitHub Stats')
-    outputs:
-      pr_number: ${{ steps.create-pr.outputs.pr_number }}
-
-    env:
-      GH_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
 
     steps:
       - name: 1. Checkout Main Branch
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.WORKFLOW_TOKEN }}
+          fetch-depth: 0
 
-      - name: 2. Create develop branch if not exists
-        run: |
-          git fetch origin
-          if ! git rev-parse --verify origin/develop >/dev/null 2>&1; then
-            git checkout -b develop
-            git push origin develop
-          fi
-          git checkout develop
-          git pull origin develop
-
-      - name: 3. Create assets directory if not exists
+      - name: 2. Create assets directory if not exists
         run: |
           if [ ! -d "assets" ]; then
             mkdir -p assets
@@ -49,7 +34,7 @@ jobs:
             echo "This directory contains auto-generated GitHub stats and visualizations." >> assets/README.md
           fi
 
-      - name: 4. Generate GitHub Snake Animation (Light - Tokyo Night Blue)
+      - name: 3. Generate GitHub Snake Animation (Light - Tokyo Night Blue)
         uses: Platane/snk/svg-only@v3
         with:
           github_user_name: justcarlson
@@ -58,10 +43,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 4a. Add Genesis Block Footer (Light)
+      - name: 3a. Add Genesis Block Footer (Light)
         run: python3 scripts/add-genesis-footer.py assets/github-snake.svg light
 
-      - name: 5. Generate GitHub Snake Animation (Dark - Tokyo Night Green)
+      - name: 4. Generate GitHub Snake Animation (Dark - Tokyo Night Green)
         uses: Platane/snk/svg-only@v3
         with:
           github_user_name: justcarlson
@@ -70,122 +55,28 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: 5a. Add Genesis Block Footer (Dark)
+      - name: 4a. Add Genesis Block Footer (Dark)
         run: python3 scripts/add-genesis-footer.py assets/github-snake-dark.svg dark
 
-      - name: 6. Fetch GitHub Stats
+      - name: 5. Fetch GitHub Stats
         run: |
           curl -f --connect-timeout 30 --retry 3 --retry-delay 5 \
             -o "./assets/github-stats.svg" \
             "https://github-readme-stats.vercel.app/api?username=justcarlson&show_icons=true&hide_border=true&bg_color=1a1b26&title_color=7aa2f7&text_color=a9b1d6&icon_color=9ece6a" \
             || echo "Failed to fetch GitHub Stats."
 
-      - name: 7. Configure Git
+      - name: 6. Configure Git
         run: |
           git config --local user.email "40642470+justcarlson@users.noreply.github.com"
           git config --local user.name "Justin Carlson"
 
-      - name: 8. Commit Snake Animation (Light)
+      - name: 7. Commit and Push Changes
         run: |
-          if [ -f "assets/github-snake.svg" ]; then
-            git add assets/github-snake.svg
-            git diff --staged --quiet || git commit -m "Update: GitHub Snake Animation (Light Mode)"
+          git add assets/github-snake.svg assets/github-snake-dark.svg assets/github-stats.svg assets/README.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+            exit 0
           fi
 
-      - name: 9. Commit Snake Animation (Dark)
-        run: |
-          if [ -f "assets/github-snake-dark.svg" ]; then
-            git add assets/github-snake-dark.svg
-            git diff --staged --quiet || git commit -m "Update: GitHub Snake Animation (Dark Mode)"
-          fi
-
-      - name: 10. Commit GitHub Stats
-        run: |
-          if [ -f "assets/github-stats.svg" ]; then
-            git add assets/github-stats.svg
-            git diff --staged --quiet || git commit -m "Update: GitHub Stats"
-          fi
-
-      - name: 11. Commit Assets README if new
-        run: |
-          if [ -f "assets/README.md" ]; then
-            git add assets/README.md
-            git diff --staged --quiet || git commit -m "Update: Assets README"
-          fi
-
-      - name: 12. Push to develop branch
-        run: git push origin develop
-
-      - name: 13. Create Pull Request
-        id: create-pr
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          EXISTING_PR=$(gh pr list --base main --head develop --json number --jq '.[0].number // empty')
-
-          if [ -z "$EXISTING_PR" ]; then
-            gh pr create \
-              --base main \
-              --head develop \
-              --title "Auto-update: GitHub Stats & Visualizations" \
-              --body "Automated update of GitHub stats and snake animations."
-
-            PR_NUMBER=$(gh pr list --base main --head develop --json number --jq '.[0].number')
-            echo "PR created: #$PR_NUMBER"
-          else
-            PR_NUMBER=$EXISTING_PR
-            echo "Using existing PR #$PR_NUMBER"
-          fi
-
-          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
-          echo "Final PR number: $PR_NUMBER"
-
-  auto-approve:
-    needs: generate
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-
-    steps:
-      - name: Auto-approve PR
-        uses: hmarr/auto-approve-action@v4
-        with:
-          github-token: ${{ secrets.WORKFLOW_TOKEN }}
-          review-message: "Auto-approved: GitHub stats updated successfully"
-          pull-request-number: ${{ needs.generate.outputs.pr_number }}
-
-  auto-merge:
-    needs: [generate, auto-approve]
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Auto-merge approved PR
-        env:
-          GH_TOKEN: ${{ secrets.WORKFLOW_TOKEN }}
-        run: |
-          PR_NUMBER="${{ needs.generate.outputs.pr_number }}"
-          
-          if [ -z "$PR_NUMBER" ]; then
-            echo "PR_NUMBER is empty, trying to find PR manually..."
-            PR_NUMBER=$(gh pr list --base main --head develop --json number --jq '.[0].number // empty')
-            
-            if [ -z "$PR_NUMBER" ]; then
-              echo "No PR found, cannot merge"
-              exit 1
-            fi
-            
-            echo "Found PR #$PR_NUMBER"
-          fi
-          
-          echo "Waiting for PR #$PR_NUMBER to be mergeable..."
-          sleep 10
-
-          gh pr merge "$PR_NUMBER" --merge --subject "Merge pull request #$PR_NUMBER [skip ci]"
-          echo "PR #$PR_NUMBER merged successfully"
+          git commit -m "Auto-update: GitHub Stats & Visualizations [skip ci]"
+          git push origin main
