@@ -1,1 +1,7 @@
-* @justcarlson
+# Limit code owner review requests to hand-maintained files.
+# Auto-generated assets are intentionally not code-owned to avoid review spam.
+/README.md @justcarlson
+/index.html @justcarlson
+/scripts/* @justcarlson
+/.github/workflows/* @justcarlson
+/CODEOWNERS @justcarlson
