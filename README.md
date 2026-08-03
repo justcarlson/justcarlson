@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=28&pause=1000&color=7AA2F7&center=true&vCenter=true&width=600&lines=Hey%2C+I'm+Justin;Technical+Support+Engineer;Learning+to+build+with+AI;Homelab+enthusiast)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=28&pause=1000&color=7AA2F7&center=true&vCenter=true&width=600&lines=Hey%2C+I'm+Justin;Enterprise+AI+Platform+Administrator;Learning+to+build+with+AI;Homelab+enthusiast)](https://git.io/typing-svg)
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-414868?style=flat-square&logo=linkedin&logoColor=a9b1d6)](https://linkedin.com/in/justincarlson0)
 [![Email](https://img.shields.io/badge/Email-414868?style=flat-square&logo=gmail&logoColor=a9b1d6)](mailto:justincarlson0@gmail.com)
