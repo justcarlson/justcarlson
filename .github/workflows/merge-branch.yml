@@ -3,15 +3,20 @@ name: Sync Branches
 on:
   workflow_run:
     workflows: ["Update GitHub Stats"]
+    branches: [main]
     types:
       - completed
 
 permissions:
   contents: write
 
+concurrency:
+  group: sync-main-to-develop
+  cancel-in-progress: false
+
 jobs:
   merge-main-to-develop:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
 

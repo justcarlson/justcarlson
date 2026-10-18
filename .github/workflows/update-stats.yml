@@ -7,13 +7,20 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '.github/workflows/update-stats.yml'
+      - 'scripts/add-genesis-footer.py'
 
 permissions:
   contents: write
 
+concurrency:
+  group: update-stats-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   update-assets:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     if: |
       github.actor != 'github-actions[bot]' && 
