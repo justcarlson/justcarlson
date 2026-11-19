@@ -9,7 +9,7 @@
         aria-labelledby="descId"
       >
         <title id="titleId">Justin Carlson's GitHub Stats, Rank: A-</title>
-        <desc id="descId">Total Stars Earned: 6, Total Commits  (last year) : 1371, Total PRs: 220, Total Issues: 59, Contributed to (last year): 20</desc>
+        <desc id="descId">Total Stars Earned: 6, Total Commits  (last year) : 1372, Total PRs: 220, Total Issues: 59, Contributed to (last year): 20</desc>
         <style>
           .header {
             font: 600 18px 'Segoe UI', Ubuntu, Sans-Serif;
@@ -73,7 +73,7 @@
         stroke-dashoffset: 251.32741228718345;
       }
       to {
-        stroke-dashoffset: 93.81467890622773;
+        stroke-dashoffset: 93.81208757072852;
       }
     }
   
